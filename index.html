@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>正方形的面積 - 香港小學數學</title>
+  <!-- 引入 html2canvas 程式庫以支援報告圖片下載 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    /* 全局樣式與 iPad 觸控優化 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #f0f4f8;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      touch-action: manipulation;
+    }
+
+    /* 頂部導覽列 */
+    header {
+      background-color: #2b5278;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .lang-btn {
+      background-color: transparent;
+      border: 1px solid white;
+      color: white;
+      padding: 8px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+      min-height: 44px;
+    }
+
+    .lang-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .page-title {
+      text-align: center;
+      font-size: 1.8rem;
+      color: #2b5278;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+
+    /* 首頁選單網格 */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 2px solid transparent;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .card:hover, .card:active {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      border-color: #4a90e2;
+    }
+
+    .card h3 {
+      font-size: 1.4rem;
+      color: #1a365d;
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* 練習界面 */
+    .quiz-wrapper {
+      max-width: 650px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .back-nav-btn {
+      background: white;
+      border: 1px solid #cbd5e0;
+      color: #4a5568;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+      min-height: 44px;
+    }
+
+    .back-nav-btn:hover {
+      background-color: #edf2f7;
+      color: #2b6cb0;
+    }
+
+    .quiz-card {
+      background: white;
+      border-radius: 16px;
+      padding: 35px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      width: 100%;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #edf2f7;
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quiz-progress {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #3182ce;
+    }
+
+    .unit-tag {
+      background-color: #ebf8ff;
+      color: #2b6cb0;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      font-weight: bold;
+    }
+
+    .difficulty-tag {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+    .diff-easy { background-color: #c6f6d5; color: #22543d; }
+    .diff-medium { background-color: #feebc8; color: #744210; }
+    .diff-hard { background-color: #fed7d7; color: #9b2c2c; }
+
+    .equation-container {
+      margin: 25px 0;
+      text-align: center;
+    }
+
+    .numbers-display {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #2d3748;
+      background: #f7fafc;
+      border: 2px dashed #cbd5e0;
+      border-radius: 12px;
+      padding: 20px 15px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .input-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #2d3748;
+      flex-wrap: wrap;
+    }
+
+    .answer-input {
+      font-size: 1.8rem;
+      width: 150px;
+      text-align: center;
+      border: 2px solid #cbd5e0;
+      border-radius: 8px;
+      padding: 8px 10px;
+      outline: none;
+      transition: border-color 0.2s;
+      min-height: 50px;
+    }
+
+    .answer-input:focus {
+      border-color: #3182ce;
+    }
+
+    .unit-label {
+      font-size: 1.3rem;
+      color: #4a5568;
+    }
+
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 14px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      text-align: center;
+      min-height: 48px;
+    }
+
+    .btn:active {
+      transform: scale(0.99);
+    }
+
+    .btn-primary { background-color: #3182ce; color: white; }
+    .btn-primary:hover { background-color: #2b6cb0; }
+
+    .btn-success { background-color: #38a169; color: white; }
+    .btn-success:hover { background-color: #2f855a; }
+
+    .btn-purple { background-color: #8e44ad; color: white; margin-bottom: 10px; }
+    .btn-purple:hover { background-color: #7d3c98; }
+
+    .btn-sky { background-color: #38bdf8; color: white; margin-bottom: 10px; }
+    .btn-sky:hover { background-color: #0284c7; }
+
+    .btn-gray { background-color: #7f8c8d; color: white; }
+    .btn-gray:hover { background-color: #636e72; }
+
+    /* 反饋與提示訊息 */
+    .feedback-box {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 10px;
+      text-align: left;
+      font-size: 1rem;
+    }
+
+    .feedback-success {
+      background-color: #c6f6d5;
+      color: #22543d;
+      border: 1px solid #9ae6b4;
+    }
+
+    .feedback-warning {
+      background-color: #fefcbf;
+      color: #744210;
+      border: 1.5px solid #f6e05e;
+      box-shadow: 0 2px 8px rgba(214, 158, 46, 0.15);
+    }
+
+    .feedback-danger {
+      background-color: #fff5f5;
+      color: #9b2c2c;
+      border: 1.5px solid #feb2b2;
+      box-shadow: 0 2px 8px rgba(229, 62, 62, 0.15);
+    }
+
+    /* 圖解卡片 */
+    .notebook-card {
+      background-color: #ffffff;
+      border: 2px dashed #4a90e2;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .notebook-title {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #2b6cb0;
+      margin-bottom: 10px;
+      width: 100%;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 6px;
+    }
+
+    .solution-steps {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      width: 100%;
+      color: #2d3748;
+    }
+
+    /* 分析報告界面 */
+    .report-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .report-title {
+      text-align: center;
+      color: #3182ce;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .report-section {
+      background-color: #f8fafc;
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin-bottom: 15px;
+    }
+
+    .report-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      color: #4a5568;
+      font-size: 0.95rem;
+    }
+
+    .report-row.dashed {
+      border-bottom: 1px dashed #cbd5e0;
+    }
+
+    .report-val { font-weight: bold; }
+    .val-green { color: #276749; }
+    .val-red { color: #9b2c2c; }
+    .val-blue { color: #0284c7; }
+
+    .section-label {
+      font-weight: bold;
+      color: #2d3748;
+      margin: 15px 0 10px 0;
+      font-size: 1rem;
+    }
+
+    .list-box {
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .list-box.correct-bg { background-color: #f7fafc; }
+    .list-box.wrong-bg { background-color: #f7fafc; }
+
+    .list-title {
+      font-weight: bold;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .item-card-correct {
+      background: #f0fff4;
+      border: 1px solid #c6f6d5;
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+      color: #22543d;
+      font-weight: 500;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .item-card-wrong {
+      background: #fff5f5;
+      border: 1px solid #fed7d7;
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+      color: #9b2c2c;
+      font-weight: 500;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .item-card-correct:last-child, .item-card-wrong:last-child {
+      margin-bottom: 0;
+    }
+
+    .item-q-title { font-weight: bold; }
+    .item-ans-text { font-weight: bold; }
+
+    /* Modal 彈窗 */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .modal-box h3 { margin-bottom: 12px; color: #2b5278; }
+    .modal-box p { margin-bottom: 20px; color: #4a5568; }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 768px) {
+      .quiz-card { padding: 25px 20px; }
+      .numbers-display { font-size: 1.2rem; }
+      .answer-input { font-size: 1.5rem; width: 130px; }
+      .input-row { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 頂部導覽列 -->
+  <header>
+    <h1 id="header-title">正方形的面積</h1>
+    <button id="lang-toggle-btn" class="lang-btn" onclick="toggleLanguage()">English</button>
+  </header>
+
+  <main>
+    <div class="container">
+
+      <!-- 1. 首頁選擇界面 -->
+      <div id="page-home">
+        <h2 id="home-subtitle" class="page-title">請選擇學習單元</h2>
+        <div class="menu-grid">
+          <div class="card" onclick="startQuiz('square_area')">
+            <h3 id="unit1-card-title">單元一：正方形的面積</h3>
+            <p id="desc-opt1">練習計算正方形的面積（邊長 × 邊長，熟記 11 至 20 及 25 的平方數）以及已知面積逆推邊長。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 答題界面 -->
+      <div id="page-quiz" class="hidden">
+        <div class="quiz-wrapper">
+          <button class="back-nav-btn" onclick="askReturnHome()">
+            <span id="lbl-back-btn">← 返回單元選擇</span>
+          </button>
+
+          <div class="quiz-card">
+            <div class="quiz-header">
+              <div>
+                <span id="quiz-mode-name" class="unit-tag">正方形的面積</span>
+                <span id="quiz-diff-tag" class="difficulty-tag diff-easy">初階</span>
+              </div>
+              <span id="quiz-progress-text" class="quiz-progress">題目 1 / 10</span>
+            </div>
+
+            <p style="text-align: center; font-size: 1.1rem; color: #4a5568; margin-bottom: 12px; font-weight: 500;" id="q-prompt">
+              求以下正方形的面積：
+            </p>
+
+            <div class="equation-container">
+              <div id="numbers-display" class="numbers-display">
+                <!-- 題目內容區域 -->
+              </div>
+              
+              <!-- 填空輸入框 -->
+              <div id="input-type-row" class="input-row">
+                <span id="lbl-ans-prompt">面積 =</span>
+                <input type="text" id="answer-input" class="answer-input" placeholder="答案" autocomplete="off" inputmode="numeric">
+                <span id="lbl-unit" class="unit-label">cm²</span>
+              </div>
+            </div>
+
+            <div id="action-area" style="margin-top: 25px;">
+              <button id="btn-submit" class="btn btn-primary" onclick="checkAnswer()">提交答案</button>
+              <button id="btn-next" class="btn btn-success hidden" onclick="nextQuestion()">再答一題 ➔</button>
+            </div>
+
+            <div id="feedback-area" class="feedback-box hidden"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. 表現分析報告 -->
+      <div id="page-report" class="hidden">
+        <div id="report-card-to-capture" class="report-card">
+          <h2 id="report-main-title" class="report-title">練習完成！表現分析報告</h2>
+
+          <div class="report-section">
+            <div class="report-row dashed">
+              <span id="lbl-start-time">開始時間：</span>
+              <span id="val-start-time" class="report-val">--</span>
+            </div>
+            <div class="report-row dashed">
+              <span id="lbl-end-time">完成時間：</span>
+              <span id="val-end-time" class="report-val">--</span>
+            </div>
+            <div class="report-row">
+              <span id="lbl-duration">總用時：</span>
+              <span id="val-duration" class="report-val val-blue">--</span>
+            </div>
+          </div>
+
+          <div class="report-section">
+            <div class="report-row dashed">
+              <span id="lbl-total-correct">總答對題數：</span>
+              <span id="val-correct-count" class="report-val val-green">0 / 10</span>
+            </div>
+            <div class="report-row">
+              <span id="lbl-accuracy">整體正確率：</span>
+              <span id="val-accuracy" class="report-val">0%</span>
+            </div>
+          </div>
+
+          <div class="section-label" id="lbl-mastery-title">各主題掌握度分析</div>
+          <div class="report-section">
+            <div class="report-row">
+              <span id="report-unit-name">1. 正方形的面積</span>
+              <span id="val-unit-mastery" class="report-val">0 / 10 (0%)</span>
+            </div>
+          </div>
+
+          <div class="list-box correct-bg">
+            <div class="list-title val-green">
+              <span>☑</span> <span id="lbl-correct-title">答對的題目</span>
+            </div>
+            <div id="correct-list-container"></div>
+          </div>
+
+          <div class="list-box wrong-bg">
+            <div class="list-title val-red">
+              <span>✕</span> <span id="lbl-wrong-title">答錯 / 需要協助的題目</span>
+            </div>
+            <div id="wrong-list-container"></div>
+          </div>
+
+          <!-- 按鈕選單 -->
+          <div data-html2canvas-ignore="true" style="margin-top: 20px;">
+            <button class="btn btn-purple" onclick="downloadReportImage()"><span id="lbl-btn-download">💾 下載報告圖片</span></button>
+            <button class="btn btn-sky" onclick="retryPractice()"><span id="lbl-btn-retry">🔄 我想再試</span></button>
+            <button class="btn btn-gray" onclick="goHome()"><span id="lbl-btn-home">回到主頁重新選擇</span></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 通用 Modal -->
+  <div id="custom-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h3 id="modal-title">標題</h3>
+      <p id="modal-msg">內容訊息</p>
+      <div class="modal-buttons">
+        <button id="modal-cancel-btn" class="btn btn-gray" style="flex: 1;" onclick="closeModal()">取消</button>
+        <button id="modal-confirm-btn" class="btn btn-primary" style="flex: 1;" onclick="confirmModalAction()">確定</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 全局狀態變數
+    let currentLang = 'zh';
+    let currentQIndex = 0;
+    let questions = [];
+    let records = [];
+    let startTimeObj = null;
+    let wrongAttempts = 0;
+    let modalActionCallback = null;
+
+    // 完整多語言字典（繁體中文 / English）
+    const i18n = {
+      zh: {
+        headerTitle: "正方形的面積",
+        langBtn: "English",
+        homeSubtitle: "請選擇學習單元",
+        unit1Title: "單元一：正方形的面積",
+        descOpt1: "練習計算正方形的面積（邊長 × 邊長，熟記 11 至 20 及 25 的平方數）以及已知面積逆推邊長。",
+        unit1: "正方形的面積",
+        qProgress: "題目",
+        questionLabel: "第 {n} 題",
+        ansLabel: "答案",
+        yourAnsLabel: "你的回答",
+        correctAnsLabel: "正確答案",
+        backBtn: "← 返回單元選擇",
+        placeholderAns: "答案",
+        submitBtn: "提交答案",
+        nextBtn: "再答一題 ➔",
+
+        qPromptArea: "求以下正方形的面積：",
+        qPromptSide: "已知正方形的面積，求其邊長（想想這是哪個數的平方數）：",
+
+        displaySide: "正方形的邊長 = <strong>{s}</strong> cm",
+        displayArea: "正方形的面積 = <strong>{a}</strong> cm²",
+
+        ansPromptArea: "面積 =",
+        ansPromptSide: "邊長 =",
+        unitArea: "cm²",
+        unitSide: "cm",
+
+        easyLevel: "初階",
+        medLevel: "中階",
+        hardLevel: "高階",
+        praise: [
+          "太棒了！答對了！🌟",
+          "計算得非常精準！👏",
+          "答對了！平方數掌握得很棒！🎉",
+          "真聰明！完全掌握了正方形面積的計算！💪"
+        ],
+        encourage: [
+          "再試一次！仔細檢查計算過程喔！",
+          "沒關係，重新算算看，你可以的！",
+          "加油！記住正方形面積公式：邊長 × 邊長！"
+        ],
+
+        hintArea: "提示：正方形的面積公式為「邊長 × 邊長」。試計算：{s} × {s}。",
+        hintSide: "提示：{a} 是哪個數的平方數？試想想哪個數字「自己乘以自己」（即 邊長 × 邊長）會等於 {a}？",
+
+        stepTitle: "解析與解題思路：",
+
+        stepArea: `
+          1. 溫習公式：正方形的面積 = 邊長 × 邊長<br>
+          2. 代入邊長計算：<strong>{s} × {s}</strong> = <strong>{ans}</strong><br>
+          3. 得出面積為：<strong style="color:#e53e3e; font-size:1.2rem;">{ans} cm²</strong>
+        `,
+        stepSide: `
+          1. 溫習公式：正方形的面積 = 邊長 × 邊長<br>
+          2. 已知面積為 {a} cm²，尋找 {a} 是哪個數的平方數：<br>
+             因為 <strong>{ans} × {ans} = {a}</strong><br>
+          3. 得出正方形的邊長為：<strong style="color:#e53e3e; font-size:1.2rem;">{ans} cm</strong>
+        `,
+
+        noWrong: "太厲害了！沒有答錯的題目！",
+        noCorrect: "無答對題目",
+        reportTitle: "練習完成！表現分析報告",
+        startTime: "開始時間：",
+        endTime: "完成時間：",
+        durationTime: "總用時：",
+        totalCorrect: "總答對題數：",
+        accuracy: "整體正確率：",
+        masteryTitle: "各主題掌握度分析",
+        correctTitle: "答對的題目",
+        wrongTitle: "答錯 / 需要協助的題目",
+        btnDownload: "💾 下載報告圖片",
+        btnRetry: "🔄 我想再試",
+        btnHome: "回到主頁重新選擇",
+        modalReturnTitle: "返回單元選擇",
+        modalReturnMsg: "確定要返回主選單嗎？目前的答題進度將不會被保存。",
+        modalErrTitle: "下載提示",
+        modalErrMsg: "圖片下載失敗，請重試。",
+        modalCancel: "取消",
+        modalConfirm: "確定"
+      },
+      en: {
+        headerTitle: "Area of a Square",
+        langBtn: "繁體中文",
+        homeSubtitle: "Please Select a Learning Unit",
+        unit1Title: "Unit 1: Area of a Square",
+        descOpt1: "Practice calculating the area of a square (side × side, squares of 11–20 and 25) and finding side length from area.",
+        unit1: "Area of a Square",
+        qProgress: "Question",
+        questionLabel: "Q{n}",
+        ansLabel: "Ans",
+        yourAnsLabel: "Your Ans",
+        correctAnsLabel: "Correct Ans",
+        backBtn: "← Back to Unit Selection",
+        placeholderAns: "Ans",
+        submitBtn: "Submit Answer",
+        nextBtn: "Next Question ➔",
+
+        qPromptArea: "Find the area of the following square:",
+        qPromptSide: "Given the area of a square, find its side length (which number squared gives this area):",
+
+        displaySide: "Side length of the square = <strong>{s}</strong> cm",
+        displayArea: "Area of the square = <strong>{a}</strong> cm²",
+
+        ansPromptArea: "Area =",
+        ansPromptSide: "Side length =",
+        unitArea: "cm²",
+        unitSide: "cm",
+
+        easyLevel: "Basic",
+        medLevel: "Intermediate",
+        hardLevel: "Advanced",
+        praise: [
+          "Great job! That's correct! 🌟",
+          "Accurate calculation! 👏",
+          "Correct! Great mastery of square numbers! 🎉",
+          "Smart! You've mastered square areas! 💪"
+        ],
+        encourage: [
+          "Try again! Double check your calculations!",
+          "It's okay, calculate again!",
+          "Keep going! Remember: Area = side × side!"
+        ],
+
+        hintArea: "Hint: Area of a square = side × side. Try calculating: {s} × {s}.",
+        hintSide: "Hint: {a} is the square of which number? Think about which number multiplied by itself (side × side) equals {a}?",
+
+        stepTitle: "Solution Steps & Logic:",
+
+        stepArea: `
+          1. Formula: Area of a square = side × side<br>
+          2. Substitute side length: <strong>{s} × {s}</strong> = <strong>{ans}</strong><br>
+          3. Area is: <strong style="color:#e53e3e; font-size:1.2rem;">{ans} cm²</strong>
+        `,
+        stepSide: `
+          1. Formula: Area of a square = side × side<br>
+          2. Given area is {a} cm², find which number squared equals {a}:<br>
+             Since <strong>{ans} × {ans} = {a}</strong><br>
+          3. Side length of the square is: <strong style="color:#e53e3e; font-size:1.2rem;">{ans} cm</strong>
+        `,
+
+        noWrong: "Awesome! Perfect score with no wrong answers!",
+        noCorrect: "No correct answers",
+        reportTitle: "Practice Complete! Performance Report",
+        startTime: "Start Time:",
+        endTime: "End Time:",
+        durationTime: "Duration:",
+        totalCorrect: "Total Correct:",
+        accuracy: "Overall Accuracy:",
+        masteryTitle: "Topic Mastery Analysis",
+        correctTitle: "Correct Questions",
+        wrongTitle: "Incorrect / Needs Review",
+        btnDownload: "💾 Download Report Image",
+        btnRetry: "🔄 Try Again",
+        btnHome: "Back to Home",
+        modalReturnTitle: "Return to Unit Selection",
+        modalReturnMsg: "Are you sure you want to return? Current progress will not be saved.",
+        modalErrTitle: "Download Notice",
+        modalErrMsg: "Failed to download report image, please try again.",
+        modalCancel: "Cancel",
+        modalConfirm: "Confirm"
+      }
+    };
+
+    // 隨機選取不重複元素的工具函式（使用 Fisher-Yates 洗牌確保均勻隨機且不重複）
+    function getRandomSample(array, count) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy.slice(0, count);
+    }
+
+    function startQuiz(mode) {
+      currentQIndex = 0;
+      records = [];
+      startTimeObj = new Date();
+
+      document.getElementById('page-home').classList.add('hidden');
+      document.getElementById('page-report').classList.add('hidden');
+      document.getElementById('page-quiz').classList.remove('hidden');
+
+      generateQuestions();
+      loadQuestion();
+    }
+
+    /**
+     * 題目生成邏輯：
+     * - 每次產生 10 題，每條題目絕不重複
+     * - 難度由低至高排序（初階 -> 中階 -> 高階）：
+     *   1. 初階題目（第 1–3 題，共 3 題）：問 11 至 15 的平方數（給定邊長，求正方形面積）
+     *   2. 中階題目（第 4–7 題，共 4 題）：問 16 至 20 以及 25 的平方數（給定邊長，求正方形面積）
+     *   3. 高階題目（第 8–10 題，共 3 題）：逆向問這是甚麼的平方數（給定正方形面積，逆求邊長）
+     */
+    function generateQuestions() {
+      questions = [];
+
+      // 1. 初階題目 (3題)：11 至 15 的平方數
+      const easySides = [11, 12, 13, 14, 15];
+      const selectedEasySides = getRandomSample(easySides, 3);
+      selectedEasySides.forEach(s => {
+        const a = s * s;
+        questions.push({
+          level: 'easy',
+          target: 'area',
+          side: s,
+          area: a,
+          ans: a.toString()
+        });
+      });
+
+      // 2. 中階題目 (4題)：16 至 20 以及 25 的平方數
+      const medSides = [16, 17, 18, 19, 20, 25];
+      const selectedMedSides = getRandomSample(medSides, 4);
+      selectedMedSides.forEach(s => {
+        const a = s * s;
+        questions.push({
+          level: 'medium',
+          target: 'area',
+          side: s,
+          area: a,
+          ans: a.toString()
+        });
+      });
+
+      // 3. 高階題目 (3題)：逆向問這是甚麼的平方數（從 11–15 選 1 個、16–20及25 選 2 個，再隨機洗牌確保不重複且涵蓋兩個範圍）
+      const hardFromEasy = getRandomSample(easySides, 1);
+      const hardFromMed = getRandomSample(medSides, 2);
+      const selectedHardSides = getRandomSample([...hardFromEasy, ...hardFromMed], 3);
+
+      selectedHardSides.forEach(s => {
+        const a = s * s;
+        questions.push({
+          level: 'hard',
+          target: 'side',
+          side: s,
+          area: a,
+          ans: s.toString()
+        });
+      });
+    }
+
+    function loadQuestion() {
+      wrongAttempts = 0;
+      const q = questions[currentQIndex];
+      const t = i18n[currentLang];
+
+      document.getElementById('feedback-area').classList.add('hidden');
+      document.getElementById('feedback-area').innerHTML = '';
+      document.getElementById('btn-submit').classList.remove('hidden');
+      document.getElementById('btn-next').classList.add('hidden');
+      document.getElementById('btn-submit').innerText = t.submitBtn;
+      document.getElementById('btn-next').innerText = t.nextBtn;
+
+      document.getElementById('quiz-mode-name').innerText = t.unit1;
+      document.getElementById('quiz-progress-text').innerText = `${t.qProgress} ${currentQIndex + 1} / ${questions.length}`;
+
+      const diffTag = document.getElementById('quiz-diff-tag');
+      if (q.level === 'easy') {
+        diffTag.className = 'difficulty-tag diff-easy';
+        diffTag.innerText = t.easyLevel;
+      } else if (q.level === 'medium') {
+        diffTag.className = 'difficulty-tag diff-medium';
+        diffTag.innerText = t.medLevel;
+      } else {
+        diffTag.className = 'difficulty-tag diff-hard';
+        diffTag.innerText = t.hardLevel;
+      }
+
+      const displayEl = document.getElementById('numbers-display');
+      const qPrompt = document.getElementById('q-prompt');
+      const ansPrompt = document.getElementById('lbl-ans-prompt');
+      const unitLabel = document.getElementById('lbl-unit');
+
+      if (q.target === 'area') {
+        qPrompt.innerText = t.qPromptArea;
+        displayEl.innerHTML = t.displaySide.replace('{s}', q.side);
+        ansPrompt.innerText = t.ansPromptArea;
+        unitLabel.innerText = t.unitArea;
+      } else {
+        qPrompt.innerText = t.qPromptSide;
+        displayEl.innerHTML = t.displayArea.replace('{a}', q.area);
+        ansPrompt.innerText = t.ansPromptSide;
+        unitLabel.innerText = t.unitSide;
+      }
+
+      const input = document.getElementById('answer-input');
+      input.disabled = false;
+      input.value = '';
+      input.placeholder = t.placeholderAns;
+      setTimeout(() => input.focus(), 100);
+    }
+
+    function disableInputs() {
+      const input = document.getElementById('answer-input');
+      if (input) input.disabled = true;
+    }
+
+    function checkAnswer() {
+      const q = questions[currentQIndex];
+      const t = i18n[currentLang];
+      const feedback = document.getElementById('feedback-area');
+      const input = document.getElementById('answer-input');
+
+      const userVal = input.value.trim();
+      if (userVal === '') return;
+
+      // 允許數值等價比對（避免前導零或空白影響）
+      const parsedUser = Number(userVal);
+      const isCorrect = !Number.isNaN(parsedUser) && parsedUser === Number(q.ans);
+
+      if (records.length <= currentQIndex) {
+        records.push({
+          qIndex: currentQIndex + 1,
+          questionObj: q,
+          targetAns: q.ans,
+          isCorrectOnFirstTry: isCorrect,
+          userFirstWrong: isCorrect ? null : userVal
+        });
+      }
+
+      feedback.classList.remove('hidden', 'feedback-success', 'feedback-danger', 'feedback-warning');
+
+      if (isCorrect) {
+        disableInputs();
+        document.getElementById('btn-submit').classList.add('hidden');
+        document.getElementById('btn-next').classList.remove('hidden');
+
+        const randomPraise = t.praise[Math.floor(Math.random() * t.praise.length)];
+        const solutionHTML = getDetailedSolutionHTML(q, t);
+
+        feedback.className = 'feedback-box feedback-success';
+        feedback.innerHTML = `
+          <div style="font-size: 1.15rem; font-weight: bold; margin-bottom: 8px;">${randomPraise}</div>
+          <div class="notebook-card">
+            <div class="notebook-title">${t.stepTitle}</div>
+            <div class="solution-steps">${solutionHTML}</div>
+          </div>
+        `;
+      } else {
+        wrongAttempts++;
+        const randomEnc = t.encourage[Math.floor(Math.random() * t.encourage.length)];
+
+        if (wrongAttempts < 2) {
+          // 第 1 次答錯：黃色背景提示
+          feedback.className = 'feedback-box feedback-warning';
+
+          // 清空輸入框並重新聚焦
+          input.value = '';
+          setTimeout(() => input.focus(), 50);
+
+          let hintContent = '';
+          if (q.target === 'area') {
+            hintContent = t.hintArea.replace(/{s}/g, q.side);
+          } else {
+            hintContent = t.hintSide.replace(/{a}/g, q.area);
+          }
+
+          const attemptText = currentLang === 'zh' ? `(嘗試 ${wrongAttempts}/2)` : `(Attempt ${wrongAttempts}/2)`;
+          feedback.innerHTML = `
+            <strong>${randomEnc} ${attemptText}</strong><br>
+            <span style="font-size:0.95rem; margin-top:4px; display:inline-block;">${hintContent}</span>
+          `;
+        } else {
+          // 第 2 次答錯：紅色背景完整題解
+          feedback.className = 'feedback-box feedback-danger';
+
+          disableInputs();
+          document.getElementById('btn-submit').classList.add('hidden');
+          document.getElementById('btn-next').classList.remove('hidden');
+
+          const solutionHTML = getDetailedSolutionHTML(q, t);
+          const failHeader = currentLang === 'zh'
+            ? '已嘗試 2 次，請參考以下正確答案與詳細解析：'
+            : 'Tried 2 times, please refer to the correct answer and solution below:';
+
+          feedback.innerHTML = `
+            <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px; color: #9b2c2c;">${failHeader}</div>
+            <div class="notebook-card">
+              <div class="notebook-title">${t.stepTitle}</div>
+              <div class="solution-steps">${solutionHTML}</div>
+            </div>
+          `;
+        }
+      }
+    }
+
+    function getDetailedSolutionHTML(q, t) {
+      if (q.target === 'area') {
+        return t.stepArea
+          .replace(/{s}/g, q.side)
+          .replace(/{ans}/g, q.ans);
+      } else {
+        return t.stepSide
+          .replace(/{a}/g, q.area)
+          .replace(/{ans}/g, q.ans);
+      }
+    }
+
+    function nextQuestion() {
+      currentQIndex++;
+      if (currentQIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showReport();
+      }
+    }
+
+    function formatDate(d) {
+      const pad = (n) => n.toString().padStart(2, '0');
+      return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    function formatDuration(start, end) {
+      const diffInSeconds = Math.max(0, Math.floor((end - start) / 1000));
+      const mins = Math.floor(diffInSeconds / 60);
+      const secs = diffInSeconds % 60;
+      if (currentLang === 'en') {
+        return mins > 0 ? `${mins} min ${secs} sec` : `${secs} sec`;
+      } else {
+        return mins > 0 ? `${mins}分鐘${String(secs).padStart(2, '0')}秒` : `${secs}秒`;
+      }
+    }
+
+    function getQuestionTitleText(q) {
+      if (q.target === 'area') {
+        return currentLang === 'zh' ? `邊長 ${q.side} cm → 面積` : `Side ${q.side} cm → Area`;
+      } else {
+        return currentLang === 'zh' ? `面積 ${q.area} cm² → 邊長` : `Area ${q.area} cm² → Side`;
+      }
+    }
+
+    function showReport() {
+      const endTimeObj = new Date();
+      const t = i18n[currentLang];
+
+      document.getElementById('page-quiz').classList.add('hidden');
+      document.getElementById('page-report').classList.remove('hidden');
+
+      document.getElementById('report-main-title').innerText = t.reportTitle;
+      document.getElementById('lbl-start-time').innerText = t.startTime;
+      document.getElementById('lbl-end-time').innerText = t.endTime;
+      document.getElementById('lbl-duration').innerText = t.durationTime;
+      document.getElementById('lbl-total-correct').innerText = t.totalCorrect;
+      document.getElementById('lbl-accuracy').innerText = t.accuracy;
+      document.getElementById('lbl-mastery-title').innerText = t.masteryTitle;
+      document.getElementById('lbl-correct-title').innerText = t.correctTitle;
+      document.getElementById('lbl-wrong-title').innerText = t.wrongTitle;
+
+      document.getElementById('lbl-btn-download').innerText = t.btnDownload;
+      document.getElementById('lbl-btn-retry').innerText = t.btnRetry;
+      document.getElementById('lbl-btn-home').innerText = t.btnHome;
+
+      document.getElementById('val-start-time').innerText = formatDate(startTimeObj);
+      document.getElementById('val-end-time').innerText = formatDate(endTimeObj);
+      document.getElementById('val-duration').innerText = formatDuration(startTimeObj, endTimeObj);
+
+      let correctCount = 0;
+      records.forEach(r => {
+        if (r.isCorrectOnFirstTry) correctCount++;
+      });
+
+      const total = records.length;
+      const accuracyPct = Math.round((correctCount / total) * 100);
+
+      document.getElementById('val-correct-count').innerText = `${correctCount} / ${total}`;
+      document.getElementById('val-accuracy').innerText = `${accuracyPct}%`;
+
+      document.getElementById('report-unit-name').innerText = `1. ${t.unit1}`;
+      document.getElementById('val-unit-mastery').innerText = `${correctCount} / ${total} (${accuracyPct}%)`;
+
+      const correctContainer = document.getElementById('correct-list-container');
+      correctContainer.innerHTML = '';
+      const correctItems = records.filter(r => r.isCorrectOnFirstTry);
+
+      if (correctItems.length === 0) {
+        correctContainer.innerHTML = `<div style="font-size:0.95rem; color:#718096; padding-left:5px;">${t.noCorrect}</div>`;
+      } else {
+        correctItems.forEach(item => {
+          const qText = t.questionLabel.replace('{n}', item.qIndex);
+          const qExprText = getQuestionTitleText(item.questionObj);
+          const unitStr = item.questionObj.target === 'area' ? 'cm²' : 'cm';
+
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'item-card-correct';
+          itemDiv.innerHTML = `
+            <div class="item-q-title">${qText} : [ ${qExprText} ]</div>
+            <div class="item-ans-text">${t.ansLabel} : ${item.targetAns} ${unitStr}</div>
+          `;
+          correctContainer.appendChild(itemDiv);
+        });
+      }
+
+      const wrongContainer = document.getElementById('wrong-list-container');
+      wrongContainer.innerHTML = '';
+      const wrongItems = records.filter(r => !r.isCorrectOnFirstTry);
+
+      if (wrongItems.length === 0) {
+        wrongContainer.innerHTML = `<div style="font-size:0.95rem; color:#38a169; padding-left:5px;">${t.noWrong}</div>`;
+      } else {
+        wrongItems.forEach(item => {
+          const qText = t.questionLabel.replace('{n}', item.qIndex);
+          const qExprText = getQuestionTitleText(item.questionObj);
+          const unitStr = item.questionObj.target === 'area' ? 'cm²' : 'cm';
+
+          let userDisplay = item.userFirstWrong !== null ? `${item.userFirstWrong} ${unitStr}` : '-';
+          let targetDisplay = `${item.targetAns} ${unitStr}`;
+
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'item-card-wrong';
+          itemDiv.innerHTML = `
+            <div class="item-q-title">${qText} : [ ${qExprText} ]</div>
+            <div class="item-ans-text">${t.yourAnsLabel} : ${userDisplay} | ${t.correctAnsLabel} : ${targetDisplay}</div>
+          `;
+          wrongContainer.appendChild(itemDiv);
+        });
+      }
+    }
+
+    function downloadReportImage() {
+      const element = document.getElementById('report-card-to-capture');
+      if (!element) return;
+      const t = i18n[currentLang];
+
+      html2canvas(element, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        useCORS: true
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `Square_Area_Report_${new Date().toISOString().slice(0,10)}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }).catch(() => {
+        openModal(
+          t.modalErrTitle,
+          t.modalErrMsg,
+          t.modalCancel,
+          t.modalConfirm,
+          null
+        );
+      });
+    }
+
+    function openModal(title, msg, cancelTxt, confirmTxt, onConfirm) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-msg').innerText = msg;
+      document.getElementById('modal-cancel-btn').innerText = cancelTxt;
+      document.getElementById('modal-confirm-btn').innerText = confirmTxt;
+      modalActionCallback = onConfirm;
+      document.getElementById('custom-modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('custom-modal').classList.remove('active');
+    }
+
+    function confirmModalAction() {
+      closeModal();
+      if (modalActionCallback) modalActionCallback();
+    }
+
+    function askReturnHome() {
+      const t = i18n[currentLang];
+      openModal(
+        t.modalReturnTitle,
+        t.modalReturnMsg,
+        t.modalCancel,
+        t.modalConfirm,
+        goHome
+      );
+    }
+
+    function retryPractice() {
+      startQuiz('square_area');
+    }
+
+    function goHome() {
+      document.getElementById('page-quiz').classList.add('hidden');
+      document.getElementById('page-report').classList.add('hidden');
+      document.getElementById('page-home').classList.remove('hidden');
+      document.getElementById('lang-toggle-btn').classList.remove('hidden');
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'zh' ? 'en' : 'zh';
+      const t = i18n[currentLang];
+
+      document.title = currentLang === 'zh' ? '正方形的面積 - 香港小學數學' : 'Area of a Square - HK Primary Math';
+      document.getElementById('header-title').innerText = t.headerTitle;
+      document.getElementById('lang-toggle-btn').innerText = t.langBtn;
+      document.getElementById('home-subtitle').innerText = t.homeSubtitle;
+      document.getElementById('unit1-card-title').innerText = t.unit1Title;
+      document.getElementById('desc-opt1').innerText = t.descOpt1;
+      document.getElementById('lbl-back-btn').innerText = t.backBtn;
+
+      if (!document.getElementById('page-quiz').classList.contains('hidden')) {
+        loadQuestion();
+      } else if (!document.getElementById('page-report').classList.contains('hidden')) {
+        showReport();
+      }
+    }
+
+    function handleEnterKey() {
+      const btnNext = document.getElementById('btn-next');
+      const btnSubmit = document.getElementById('btn-submit');
+
+      // 若「再答一題」按鈕顯示中，按下 Enter 鍵切換至下一題
+      if (btnNext && !btnNext.classList.contains('hidden')) {
+        nextQuestion();
+      } else if (btnSubmit && !btnSubmit.classList.contains('hidden')) {
+        checkAnswer();
+      }
+    }
+
+    // 全局鍵盤事件監聽，確保輸入框停用或失去焦點時 Enter 鍵依然有效
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const quizPage = document.getElementById('page-quiz');
+        const modal = document.getElementById('custom-modal');
+        if (quizPage && !quizPage.classList.contains('hidden') && (!modal || !modal.classList.contains('active'))) {
+          e.preventDefault();
+          handleEnterKey();
+        }
+      }
+    });
+  </script>
+  <!-- iPad 修正腳本 -->
+  <script src="https://mathteacher1618.github.io/my_fixes/ipad_fix.js"></script>
+</body>
+</html>
